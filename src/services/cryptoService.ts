@@ -4,23 +4,6 @@ interface EncryptedData {
 }
 
 const cryptoService = {
-    /**
-     * Generates a cryptographically strong salt.
-     * @param length The desired length of the salt in bytes. Defaults to 16.
-     * @returns A Uint8Array containing the salt.
-     */
-    generateSalt(length: number = 16): Uint8Array {
-        const array = new Uint8Array(length);
-        window.crypto.getRandomValues(array);
-        return array;
-    },
-
-    /**
-     * Derives an encryption key from a password and salt using PBKDF2.
-     * @param password The user's password.
-     * @param salt A Uint8Array salt.
-     * @returns A Promise that resolves to a CryptoKey suitable for AES-GCM.
-     */
     async deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
         if (!(salt instanceof Uint8Array)) {
             throw new Error("Salt must be a Uint8Array.");
@@ -37,7 +20,7 @@ const cryptoService = {
             {
                 name: "PBKDF2",
                 salt: salt,
-                iterations: 250000, // OWASP recommendation
+                iterations: 250000,
                 hash: "SHA-256",
             },
             keyMaterial,
@@ -47,15 +30,9 @@ const cryptoService = {
         );
     },
 
-    /**
-     * Encrypts plaintext using AES-GCM.
-     * @param plaintext The string to encrypt.
-     * @param key The CryptoKey to use for encryption.
-     * @returns A Promise that resolves to an object containing the ciphertext and IV as Uint8Arrays.
-     */
     async encryptNote(plaintext: string, key: CryptoKey): Promise<EncryptedData> {
         const enc = new TextEncoder();
-        const iv = window.crypto.getRandomValues(new Uint8Array(12)); // 96-bit IV is recommended for GCM
+        const iv = window.crypto.getRandomValues(new Uint8Array(12)); // 96 bit IV
         const encodedPlaintext = enc.encode(plaintext);
 
         const ciphertextBuffer = await window.crypto.subtle.encrypt(
@@ -69,14 +46,6 @@ const cryptoService = {
         return { ciphertext: new Uint8Array(ciphertextBuffer), iv: iv };
     },
 
-    /**
-     * Decrypts ciphertext using AES-GCM.
-     * @param ciphertext A Uint8Array of the encrypted data.
-     * @param iv A Uint8Array of the Initialization Vector.
-     * @param key The CryptoKey to use for decryption.
-     * @returns A Promise that resolves to the decrypted plaintext string.
-     * @throws Will throw an error if decryption fails (e.g., wrong key, corrupted data).
-     */
     async decryptNote(ciphertext: Uint8Array, iv: Uint8Array, key: CryptoKey): Promise<string> {
         if (!(ciphertext instanceof Uint8Array)) throw new Error("Ciphertext must be Uint8Array");
         if (!(iv instanceof Uint8Array)) throw new Error("IV must be Uint8Array");
@@ -98,11 +67,6 @@ const cryptoService = {
         }
     },
 
-    /**
-     * Converts a Uint8Array to a Base64 string.
-     * @param array The Uint8Array to convert.
-     * @returns The Base64 encoded string.
-     */
     uint8ArrayToBase64(array: Uint8Array): string {
         let binary = '';
         const len = array.byteLength;
@@ -112,11 +76,6 @@ const cryptoService = {
         return window.btoa(binary);
     },
 
-    /**
-     * Converts a Base64 string to a Uint8Array.
-     * @param base64 The Base64 string to convert.
-     * @returns The corresponding Uint8Array.
-     */
     base64ToUint8Array(base64: string): Uint8Array {
         const binary_string = window.atob(base64);
         const len = binary_string.length;
