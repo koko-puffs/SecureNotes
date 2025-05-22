@@ -20,11 +20,14 @@ const cryptoService = {
             {
                 name: "PBKDF2",
                 salt: salt,
-                iterations: 250000,
+                iterations: 250000, // Makes bruteforcing much harder as the process has been made much slower
                 hash: "SHA-256",
             },
             keyMaterial,
-            { name: "AES-GCM", length: 256 },
+            { 
+                name: "AES-GCM", 
+                length: 256 
+            },
             true,
             ["encrypt", "decrypt"]
         );
