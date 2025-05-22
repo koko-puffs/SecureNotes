@@ -52,7 +52,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useNotesStore } from '@/stores/notes';
 import { useAuthStore } from '@/stores/auth';
-import type { AppError } from '@/types';
+import type { AppError, Note } from '@/types';
 import MessageBox from '@/components/MessageBox.vue';
 import { Save, LoaderCircle, ArrowLeft } from 'lucide-vue-next';
 
@@ -89,12 +89,12 @@ const loadNoteData = async () => {
     noteTitle.value = '';
     noteContent.value = '';
   } else {
-    let existingNote = notesStore.notes.find(n => n.id === noteId.value);
+    let existingNote = notesStore.notes.find((n: Note) => n.id === noteId.value);
 
     if (!existingNote && notesStore.notes.length === 0 && authStore.isAuthenticated) {
       // If notes are not loaded yet, fetch them
       await notesStore.fetchNotes();
-      existingNote = notesStore.notes.find(n => n.id === noteId.value);
+      existingNote = notesStore.notes.find((n: Note) => n.id === noteId.value);
     }
 
 

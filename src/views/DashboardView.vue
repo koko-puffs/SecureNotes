@@ -145,7 +145,7 @@ const editNoteHandler = (noteId: string) => {
 };
 
 const confirmDeleteNoteHandler = (noteId: string) => {
-  const note = notesStore.notes.find(n => n.id === noteId);
+  const note = notesStore.notes.find((n: Note) => n.id === noteId);
   if (note) {
     noteToDelete.value = note;
     showDeleteModal.value = true;

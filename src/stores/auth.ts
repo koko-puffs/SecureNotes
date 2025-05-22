@@ -120,7 +120,7 @@ export const useAuthStore = defineStore('auth', {
             this.loading = true;
             this.clearMessages();
             try {
-                const { data, error: signUpError } = await supabase.auth.signUp({
+                const { error: signUpError } = await supabase.auth.signUp({
                     email,
                     password,
                 });
@@ -128,6 +128,7 @@ export const useAuthStore = defineStore('auth', {
                 if (signUpError) {
                     throw signUpError;
                 }
+                return true;
             } catch (err) {
                 console.error("Registration error:", err);
                 this.error = { message: (err as AuthError | Error).message || "An unknown registration error occurred."};

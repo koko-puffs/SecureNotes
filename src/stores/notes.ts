@@ -145,7 +145,7 @@ export const useNotesStore = defineStore('notes', {
                 if (dbError) throw dbError;
                 if (!data) throw new Error("Failed to update note: No data returned from server or note not found.");
 
-                const index = this.notes.findIndex(n => n.id === noteId);
+                const index = this.notes.findIndex((n: Note) => n.id === noteId);
                 if (index !== -1) {
                     this.notes[index] = { ...this.notes[index], ...data, decrypted_content: plaintext_content };
                 }
@@ -177,7 +177,7 @@ export const useNotesStore = defineStore('notes', {
 
                 if (dbError) throw dbError;
 
-                this.notes = this.notes.filter(n => n.id !== noteId);
+                this.notes = this.notes.filter((n: Note) => n.id !== noteId);
                 this.message = "Note deleted successfully.";
                 return true;
             } catch (err) {
